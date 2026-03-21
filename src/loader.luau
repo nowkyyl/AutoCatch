@@ -1,0 +1,17 @@
+local baseUrl = "https://raw.githubusercontent.com/nowkyyl/AutoCatch/refs/heads/main/src"
+local function require(path): string
+    path = path:gsub("^@self/", "")
+    local response = request({
+        Url = `{baseUrl}/{path}.luau` :: string,
+        Method = "GET"
+    })
+
+    assert(response.Success, `Failed to load {path}.luau`)
+    return response.Body
+end
+
+local construct = loadstring(require("init"))
+setfenv(construct, (setmetatable({
+    require = require
+}, { __index = getfenv(construct) }) :: any))
+construct()
