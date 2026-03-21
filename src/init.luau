@@ -36,10 +36,6 @@ for i, v in rarities do
 		continue
 	end
 
-	table.sort(pets, function(a, b)
-		return string.lower(tostring(a)) < string.lower(tostring(b))
-	end)
-
 	local newPets = {}
 	for index, name in pets do
 	    if name:find("Lucky Block") then
@@ -48,6 +44,10 @@ for i, v in rarities do
 		table.insert(newPets, name)
 	end
 	pets = newPets
+
+	table.sort(pets, function(a, b)
+		return string.lower(tostring(a)) < string.lower(tostring(b))
+	end)
 
 	local dropdown = tabGroupRight:AddDropdown(`Pets-{v}`, {
 		Values = pets,
@@ -147,15 +147,23 @@ local function CatchPets()
             end
 
             local dropdown = options[`Pets-{rarity}`]
-            if not (toggles.LuckyBlockToggle.Value and petName:lower():find("lucky block")) and (not dropdown or not dropdown.Value[petName]) then
+            if not (
+                (toggles.LuckyBlockToggle.Value and petName:lower():find("lucky block")) or
+                (dropdown and dropdown.Value[petName])
+            ) then
                 continue
             end
 
             local myCFrame = character:GetPrimaryPartCFrame()
             local ok = minigameRequest:InvokeServer(pet, myCFrame)
-            while not ok do
+            local l = tick()
+            while not ok and tick() - l < 3 do
                 task.wait()
                 ok = minigameRequest:InvokeServer(pet, myCFrame)
+            end
+
+            if not ok then
+                continue
             end
 
             retrieveData:InvokeServer()
