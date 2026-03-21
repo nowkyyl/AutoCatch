@@ -28,11 +28,13 @@ tabGroup:AddDropdown("RaritiesToCapture", {
 	Default = 1,
 	Multi = true,
 	Text = "Capture rarities",
-	Tooltip = "select rarities to capture",
+	Tooltip = "select rarities to capture (all pets)",
 	Callback = function(selected)
 		print(selected)
 	end,
 })
+
+tabGroup:AddDivider()
 
 local RaritiesPets = require("@self/pets")
 for i, v in rarities do
@@ -41,12 +43,16 @@ for i, v in rarities do
 		continue
 	end
 
+	table.sort(pets, function(a, b)
+		return string.lower(tostring(a)) < string.lower(tostring(b))
+	end)
+
 	tabGroup:AddDropdown(`PetToCapture{v}`, {
 		Values = pets,
 		Default = 1,
 		Multi = true,
-		Text = "Capture pet's",
-		Tooltip = "select pets to capture",
+		Text = `Capture ${v}`,
+		Tooltip = "select pets to capture by rarity",
 		Callback = function(selected)
 			print(selected)
 		end,
