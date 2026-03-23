@@ -124,7 +124,7 @@ local toggles = (getgenv().Toggles :: {
     LuckyBlockToggle: Toggle,
 })
 
-local islands = { "Roaming", "Ice Island", "Sky Island", "Water Island" }
+local islands = { "Roaming", "IceIsland", "SkyIsland", "WaterIsland". "BeeIsland" }
 for i, v in islands do
     islands[i] = workspace:FindFirstChild(`{v}Pets`)
 end
